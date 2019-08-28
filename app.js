@@ -13,6 +13,8 @@ app.use(cors.permisos);
 connection.inicia();
 routes.configurar(app);
 
-var server = app.listen(8000, function(){
+var port = process.env.PORT || 8000;
+
+var server = app.listen(port, function(){
 	console.log('Escuchando en el puerto ',server.address().port);
 })
