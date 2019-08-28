@@ -3,6 +3,11 @@ var db = require('./queries');
 function http() {
 	this.configurar = function(app) {
 
+		/* LIBROS */
+		app.post('/nuevo-libro/',function(solicitud, respuesta){
+			db.insertarNuevoLibro(solicitud.body, respuesta);
+		})
+
 		/* AUTORES */
 		app.get('/autores/',function(solicitud, respuesta){
 			db.seleccionarAutores(respuesta); 

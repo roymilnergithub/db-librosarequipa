@@ -5,6 +5,36 @@ con.connect();
 
 function MetodosDB() {
 
+	// LIBROS
+
+	this.insertarNuevoLibro = function (datos, respuesta){
+		con.query(`INSERT into PRODUCTO_SERVICIO 
+				(codigo_producto_servicio, titulo, autor_id, isbn, editorial_id, 
+				descripcion, cantidad, imagen, precio_original, precio_compra, 
+				precio_oferta, estado_producto_servicio) 
+				values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, 
+				[
+					datos.codigo_producto_servicio, 
+					datos.titulo,
+					datos.autor_id,
+					datos.isbn,
+					datos.editorial_id,
+					datos.descripcion,
+					datos.cantidad,
+					datos.imagen,
+					datos.precio_original,
+					datos.precio_compra,
+					datos.precio_oferta,
+					datos.estado_producto_servicio
+				], (error, resultado) => {
+			if(error){
+				respuesta.send({ estado: 'Error'});
+			}else{
+				respuesta.send({ estado: 'OK. Libro insertado exitosamente'});
+			}
+		})
+	}
+
 	/* AUTORES */
 	this.seleccionarAutores = function(respuesta){
 		con.query('SELECT autor_id, nombre FROM autor ORDER BY nombre ASC;', (error, res) => {
