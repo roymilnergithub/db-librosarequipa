@@ -7,7 +7,7 @@ function MetodosDB() {
 
 	/* AUTORES */
 	this.seleccionarAutores = function(respuesta){
-		con.query('SELECT autor_id, nombre FROM autor;', (error, res) => {
+		con.query('SELECT autor_id, nombre FROM autor ORDER BY nombre ASC;', (error, res) => {
 			if (error) {
 				respuesta.send({ estado: 'Error'})
 			} else {
@@ -33,7 +33,7 @@ function MetodosDB() {
 	/* EDITORIALES */
 	this.seleccionarEditoriales = function(respuesta){
 	
-		con.query('SELECT editorial_id, nombre FROM editorial;', (error, res) => {
+		con.query('SELECT editorial_id, nombre FROM editorial ORDER BY nombre ASC;', (error, res) => {
 			if (error) {
 				respuesta.send({ estado: 'Error'})
 			} else {
