@@ -1,6 +1,7 @@
 var conexion = require('./connection');
 const multiparty = require('multiparty');
 const fs = require('fs');
+const bufferType = require('buffer-type');
 
 const con = conexion.inicia();
 con.connect();
@@ -56,7 +57,17 @@ function MetodosDB() {
 					if (error) {
 						respuesta.send({ estado: 'Error' });
 					} else {
-						respuesta.send({ estado: 'OK. Autor insertado exitosamente', datosRecibidos: dataObject });
+						let imagen = dataObject.imagen;
+						if (imagen !== null) {
+							let fileType = bufferType(imagen);
+							if (fileType) {
+							  imagen = 'data:' + fileType.type + ';base64,' + Buffer.from(imagen).toString('base64');
+							} else {
+							  imagen = 'data:image/jpg' + ';base64,' + Buffer.from(imagen).toString('base64');
+							}
+						  }
+
+						respuesta.send({ estado: 'OK. Autor insertado exitosamente', imagenBase: imagen });
 					}
 				})
 		});
