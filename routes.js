@@ -1,26 +1,26 @@
 var db = require('./queries');
 
 function http() {
-	this.configurar = function(app) {
+	this.configurar = function (app) {
 
 		/* LIBROS */
-		app.post('/nuevo-libro/',function(solicitud, respuesta){
-			db.insertarNuevoLibro(solicitud.body, respuesta);
+		app.post('/nuevo-libro/', function (solicitud, respuesta) {
+			db.insertarNuevoLibro(solicitud, respuesta);
 		})
 
 		/* AUTORES */
-		app.get('/autores/',function(solicitud, respuesta){
-			db.seleccionarAutores(respuesta); 
+		app.get('/autores/', function (solicitud, respuesta) {
+			db.seleccionarAutores(respuesta);
 		})
-		app.post('/autor/',function(solicitud, respuesta){
+		app.post('/autor/', function (solicitud, respuesta) {
 			db.insertarAutor(solicitud.body, respuesta);
 		})
 
 		/* EDITORIALES */
-		app.get('/editoriales/',function(solicitud, respuesta){
-			db.seleccionarEditoriales(respuesta); 
+		app.get('/editoriales/', function (solicitud, respuesta) {
+			db.seleccionarEditoriales(respuesta);
 		})
-		app.post('/editorial/',function(solicitud, respuesta){
+		app.post('/editorial/', function (solicitud, respuesta) {
 			db.insertarEditorial(solicitud.body, respuesta);
 		})
 
@@ -175,7 +175,7 @@ function http() {
 		// app.get('/salida_insumos_almacen/',function(solicitud, respuesta){
 		// 	db.seleccionarSalidaInsumosAlmacen(respuesta); 
 		// })
-		
+
 		/*
 		app.get('/unidades/:id',function(solicitud, respuesta){
 			db.seleccionarId(solicitud.params.id, respuesta);

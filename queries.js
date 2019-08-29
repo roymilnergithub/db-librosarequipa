@@ -1,4 +1,6 @@
 var conexion = require('./connection');
+const multiparty = require('multiparty');
+const fs = require('fs');
 
 const con = conexion.inicia();
 con.connect();
@@ -6,40 +8,66 @@ con.connect();
 function MetodosDB() {
 
 	// LIBROS
+	this.insertarNuevoLibro = function (req, respuesta) {
 
-	this.insertarNuevoLibro = function (datos, respuesta){
-		con.query(`INSERT into PRODUCTO_SERVICIO 
+		const form = new multiparty.Form();
+		let dataObject = {};
+
+		form.parse(req, function (err, fields, files) {
+			Object.keys(fields).forEach(function (name) {
+				dataObject[`${name}`] = fields[name][0];
+			});
+			Object.keys(files).forEach(function (name) {
+				dataObject[`${name}`] = files[name][0];
+			});
+			
+			let imagen = dataObject.imagen;
+			dataObject.imagen = '';
+
+			if (imagen.path) {
+
+				const image_ = fs.readFileSync(imagen.path);
+				//fs.unlink(imagen.path);
+				fs.unlinkSync(imagen.path);
+				//productoServicioClass['imagen'] = image_;
+				dataObject.imagen = image_;
+			  }
+
+			//console.log("hola1 = ", JSON.stringify(dataObject, null, 4));
+			con.query(`INSERT into PRODUCTO_SERVICIO 
 				(codigo_producto_servicio, titulo, autor_id, isbn, editorial_id, 
 				descripcion, cantidad, imagen, precio_original, precio_compra, 
 				precio_oferta, estado_producto_servicio) 
-				values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, 
+				values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
 				[
-					datos.codigo_producto_servicio, 
-					datos.titulo,
-					datos.autor_id,
-					datos.isbn,
-					datos.editorial_id,
-					datos.descripcion,
-					datos.cantidad,
-					datos.imagen,
-					datos.precio_original,
-					datos.precio_compra,
-					datos.precio_oferta,
-					datos.estado_producto_servicio,
+					dataObject.codigo_producto_servicio,
+					dataObject.titulo,
+					dataObject.autor_id,
+					dataObject.isbn,
+					dataObject.editorial_id,
+					dataObject.descripcion,
+					dataObject.cantidad,
+					dataObject.imagen,
+					dataObject.precio_original,
+					dataObject.precio_compra,
+					dataObject.precio_oferta,
+					'ACT'
 				], (error, resultado) => {
-			if(error){
-				respuesta.send({ estado: 'Error'});
-			}else{
-				respuesta.send({ estado: 'OK. Autor insertado exitosamente', datosRecibidos: datos});
-			}
-		})
+					if (error) {
+						respuesta.send({ estado: 'Error' });
+					} else {
+						respuesta.send({ estado: 'OK. Autor insertado exitosamente', datosRecibidos: dataObject });
+					}
+				})
+		});
+
 	}
 
 	/* AUTORES */
-	this.seleccionarAutores = function(respuesta){
+	this.seleccionarAutores = function (respuesta) {
 		con.query('SELECT autor_id, nombre FROM autor ORDER BY nombre ASC;', (error, res) => {
 			if (error) {
-				respuesta.send({ estado: 'Error'})
+				respuesta.send({ estado: 'Error' })
 			} else {
 				respuesta.send(res.rows);
 				// for (let row of res.rows) {
@@ -47,37 +75,37 @@ function MetodosDB() {
 				// }
 			}
 			//con.end();
-		  });
+		});
 	}
 
-	this.insertarAutor = function (datos, respuesta){
+	this.insertarAutor = function (datos, respuesta) {
 		con.query('INSERT into AUTOR (nombre, estado_autor) values($1, $2)', [datos.nombre, datos.estado_autor], (error, resultado) => {
-			if(error){
-				respuesta.send({ estado: 'Error'});
-			}else{
-				respuesta.send({ estado: 'OK. Autor insertado exitosamente'});
+			if (error) {
+				respuesta.send({ estado: 'Error' });
+			} else {
+				respuesta.send({ estado: 'OK. Autor insertado exitosamente' });
 			}
 		})
 	}
 
 	/* EDITORIALES */
-	this.seleccionarEditoriales = function(respuesta){
-	
+	this.seleccionarEditoriales = function (respuesta) {
+
 		con.query('SELECT editorial_id, nombre FROM editorial ORDER BY nombre ASC;', (error, res) => {
 			if (error) {
-				respuesta.send({ estado: 'Error'})
+				respuesta.send({ estado: 'Error' })
 			} else {
 				respuesta.send(res.rows);
 			}
 		});
 	}
 
-	this.insertarEditorial = function (datos, respuesta){
+	this.insertarEditorial = function (datos, respuesta) {
 		con.query('INSERT into EDITORIAL (nombre, estado_editorial) values($1, $2)', [datos.nombre, datos.estado_editorial], (error, resultado) => {
-			if(error){
-				respuesta.send({ estado: 'Error'});
-			}else{
-				respuesta.send({ estado: 'OK. Editorial insertada exitosamente'});
+			if (error) {
+				respuesta.send({ estado: 'Error' });
+			} else {
+				respuesta.send({ estado: 'OK. Editorial insertada exitosamente' });
 			}
 		})
 	}

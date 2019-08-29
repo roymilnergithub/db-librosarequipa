@@ -2,7 +2,13 @@ var express = require('express');
 var bodyparser = require('body-parser');
 
 var app = express();
-app.use(bodyparser.urlencoded({ extended: true}));
+
+// bodyParser = {
+// 	json: {limit: '50mb', extended: true},
+// 	urlencoded: {limit: '50mb', extended: true}
+//   };
+
+app.use(bodyparser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 3000000 }));
 app.use(bodyparser.json());
 
 var connection = require('./connection');
@@ -15,6 +21,6 @@ routes.configurar(app);
 
 var port = process.env.PORT || 8000;
 
-var server = app.listen(port, function(){
-	console.log('Escuchando en el puerto ',server.address().port);
+var server = app.listen(port, function () {
+	console.log('Escuchando en el puerto ', server.address().port);
 })
