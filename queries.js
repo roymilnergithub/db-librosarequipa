@@ -74,6 +74,36 @@ function MetodosDB() {
 
 	}
 
+	this.seleccionarEditorialPluton = function (respuesta) {
+		con.query(`SELECT producto_servicio.titulo, autor.nombre, 
+						  editorial.nombre, producto_servicio.imagen, 
+						  producto_servicio.precio_original, producto_servicio.precio_oferta 
+						  FROM producto_servicio
+					INNER JOIN autor ON producto_servicio.autor_id = autor.autor_id
+					INNER JOIN editorial ON producto_servicio.editorial_id = editorial.editorial_id
+						  WHERE producto_servicio.estado_producto_servicio = $1 
+							AND autor.estado_autor = $1 AND editorial.estado_editorial = $1 
+							AND producto_servicio.editorial_id = $2;`, ['ACT',19],
+		(error, res) => {
+			if (error) {
+				respuesta.send({ estado: 'Error', error: error })
+			} else {
+				
+				for(i=0;i<res.rows.length;i++){
+					if (res.rows[i].imagen !== null) {
+						let fileType = bufferType(res.rows[i].imagen);
+						if (fileType) {
+						  res.rows[i].imagen = 'data:' + fileType.type + ';base64,' + Buffer.from(res.rows[i].imagen).toString('base64');
+						} else {
+						  res.rows[i].imagen = 'data:image/jpg' + ';base64,' + Buffer.from(res.rows[i].imagen).toString('base64');
+						}
+					  }
+				}
+				respuesta.send(res.rows);
+			}
+		});
+	}
+
 	/* AUTORES */
 	this.seleccionarAutores = function (respuesta) {
 		con.query('SELECT autor_id, nombre FROM autor ORDER BY nombre ASC;', (error, res) => {

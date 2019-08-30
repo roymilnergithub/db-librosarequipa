@@ -7,6 +7,9 @@ function http() {
 		app.post('/nuevo-libro/', function (solicitud, respuesta) {
 			db.insertarNuevoLibro(solicitud, respuesta);
 		})
+		app.get('/listaPluton/', function (solicitud, respuesta) {
+			db.seleccionarEditorialPluton(respuesta);
+		})
 
 		/* AUTORES */
 		app.get('/autores/', function (solicitud, respuesta) {
