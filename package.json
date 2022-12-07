@@ -9,9 +9,9 @@
   "author": "roymilner",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.20.1",
     "buffer-type": "^1.0.0",
-    "express": "^4.16.2",
+    "express": "^4.18.2",
     "formidable": "^1.2.1",
     "fs": "0.0.1-security",
     "multiparty": "^4.2.1",
